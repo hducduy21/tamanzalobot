@@ -1,0 +1,376 @@
+Starting script...
+
+Waiting for    0DEBUG No auto-send schedules foundde 'N40377' - Không tìm thấy
+SUCCESS: The process "python.exe" with PID 6288 has been terminated.t trước nhed
+SUCCESS: The process "python.exe" with PID 6300 has been terminated.
+Script stopped. Restarting...2022587  ███████║██║
+• TÊN NGƯỜI DÙNG: Nguyễn Anh Đức9577 được tắt║██║
+Waiting for 0 seconds, press CTRL+C to quit ....║
+Starting script...Đức Nguyễn04An Shop ╚═╝  ╚═╝╚═╝
+• LOẠI: ThreadType.GROUP) Tâm An Shop
+Waiting for    0DEBUG No auto-send schedules foundssful.
+SUCCESS: The process "python.exe" with PID 1884 has been terminated.
+SUCCESS: The process "python.exe" with PID 3632 has been terminated.
+Script stopped. Restarting...rt đang được tắt║██║ hệ thống.
+DEBUG No auto-send schedules found║   ██╔══██║██║ hệ thống.
+Waiting for 0 seconds, press CTRL+C to quit ....║
+Starting script.....═══╝        ╚═╝   ╚═╝  ╚═╝╚═╝
+ CHECK CPU  Mức sử dụng CPU: 14.9%
+Waiting for    0DEBUG No auto-send schedules foundde 'n41047' - Không tìm thấyonPool(host='script.google.com', port=443)SUCCESS: The process "python.exe" with PID 4364 has been terminated.ript.google.com', port=443): Read timed out. (read tSUCCESS: The process "python.exe" with PID 768 has been terminated.
+Script stopped. Restarting...0819577 được tắt║██║
+• TÊN NGƯỜI DÙNG: Hữu Tú035412093897 các nhóm...║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script... Shop 1450975.6%╝   ╚═╝  ╚═╝╚═╝
+• LOẠI: ThreadType.GROUP1yễn
+Waiting for    0DEBUG No auto-send schedules foundause of interruption...
+SUCCESS: The process "python.exe" with PID 6552 has been terminated.
+SUCCESS: The process "python.exe" with PID 4940 has been terminated.
+Script stopped. Restarting...sự kiện các nhóm...║
+ DEBUG  Listening...  ██╗       ██║   ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...╚════╝        ╚═╝   ╚═╝  ╚═╝╚═╝
+ DEBUG  Logging in None...
+Waiting for    0DEBUG No auto-send schedules foundssful.
+SUCCESS: The process "python.exe" with PID 788 has been terminated.
+SUCCESS: The process "python.exe" with PID 5228 has been terminated.
+Script stopped. Restarting...found║   ███████║██║
+RESTART BOT Chế độ auto restart đang được tắt║██║
+Waiting for 0 seconds, press CTRL+C to quit ....║
+Starting script.....═══╝        ╚═╝   ╚═╝  ╚═╝╚═╝
+ CHECK CPU  Mức sử dụng CPU: 10.8%
+Waiting for    0DEBUG No auto-send schedules foundde 'N40919' - Không tìm thấy
+SUCCESS: The process "python.exe" with PID 4120 has been terminated.
+SUCCESS: The process "python.exe" with PID 6560 has been terminated.
+Script stopped. Restarting...209389   ███████║██║
+Profile hương NG: Tâm An╗       ██║   ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script... Shop 1       ╚═╝   ╚═╝  ╚═╝╚═╝
+hạn 2/11-3/14dType.GROUP..
+Waiting for    0DEBUG No auto-send schedules foundde '001291N4S' - Không tìm thấy
+SUCCESS: The process "python.exe" with PID 6352 has been terminated.
+SUCCESS: The process "python.exe" with PID 3032 has been terminated.
+Script stopped. Restarting...5089248 được tắt║██║ độ auto restart đang được tắt
+• TÊN NGƯỜI DÙNG: Vũ Thảo Uyên Linhn các nhóm...║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...ên LinhPU: 10.7%╝   ╚═╝  ╚═╝╚═╝
+• LOẠI: ThreadType.GROUP..----
+Waiting for    0DEBUG No auto-send schedules found modules:done
+SUCCESS: The process "python.exe" with PID 3772 has been terminated.
+SUCCESS: The process "python.exe" with PID 3828 has been terminated.
+Script stopped. Restarting...found║   ███████║██║ong hệ thống.
+ EVENT GROUP  Tiến hành nhận sự kiện các nhóm...║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script... dụng CPU: 7.3%═╝   ╚═╝  ╚═╝╚═╝
+ DEBUG  Logging in None...577
+Waiting for    0DEBUG No auto-send schedules foundssful.
+SUCCESS: The process "python.exe" with PID 6152 has been terminated.
+SUCCESS: The process "python.exe" with PID 4948 has been terminated.
+Script stopped. Restarting...rt đang được tắt║██║
+DEBUG No auto-send schedules found║   ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ....║
+Starting script.....═══╝        ╚═╝   ╚═╝  ╚═╝╚═╝
+ CHECK CPU  Mức sử dụng CPU: 9.8%
+Waiting for    0DEBUG No auto-send schedules found modules:done
+SUCCESS: The process "python.exe" with PID 540 has been terminated.
+SUCCESS: The process "python.exe" with PID 3192 has been terminated.
+Script stopped. Restarting...found║   ███████║██║
+ EVENT GROUP  Tiến hành nhận sự kiện các nhóm...║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script... dụng CPU: 18.4%╝   ╚═╝  ╚═╝╚═╝
+ DEBUG  Logging in None...
+Waiting for    0DEBUG No auto-send schedules found modules:done
+SUCCESS: The process "python.exe" with PID 5584 has been terminated.
+SUCCESS: The process "python.exe" with PID 964 has been terminated.
+Script stopped. Restarting...found║   ███████║██║
+ EVENT GROUP  Tiến hành nhận sự kiện các nhóm...║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...╚════╝        ╚═╝   ╚═╝  ╚═╝╚═╝
+ DEBUG  Logging in None...
+Waiting for    0DEBUG No auto-send schedules found modules:done011: The handshake operation timed out
+SUCCESS: The process "python.exe" with PID 5388 has been terminated.
+SUCCESS: The process "python.exe" with PID 4040 has been terminated.
+SUCCESS: The process "python.exe" with PID 3148 has been terminated.
+Script stopped. Restarting...sự kiện các nhóm...║
+ DEBUG  Listening...███╔╝       ██║   ██║  ██║██║
+Waiting for 0 seconds, press CTRL+C to quit ...═╝
+Starting script... None...
+ LOGIN  Login of 84365319905 successful.
+Waiting for    0DEBUG No auto-send schedules found modules:done
+SUCCESS: The process "python.exe" with PID 4892 has been terminated.
+SUCCESS: The process "python.exe" with PID 6320 has been terminated.
+Script stopped. Restarting...found EVENT GROUP  Tiến hành nhận sự kiện các nhóm...
+██║  ██║██║   ██║██║  ██╗       ██║   ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...╚════╝        ╚═╝   ╚═╝  ╚═╝╚═╝
+ DEBUG  Logging in None...
+Waiting for    0DEBUG No auto-send schedules foundssful.
+SUCCESS: The process "python.exe" with PID 1952 has been terminated.
+SUCCESS: The process "python.exe" with PID 792 has been terminated.
+Script stopped. Restarting...rt đang được tắt║██║
+DEBUG No auto-send schedules found║   ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ....║
+Starting script.....═══╝        ╚═╝   ╚═╝  ╚═╝╚═╝
+ DEBUG  Logging in None...
+Waiting for    0DEBUG No auto-send schedules foundssful.
+SUCCESS: The process "python.exe" with PID 5712 has been terminated.
+SUCCESS: The process "python.exe" with PID 6064 has been terminated.
+Script stopped. Restarting...rt đang được tắt║██║
+DEBUG No auto-send schedules found║   ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ....║
+Starting script.....═══╝        ╚═╝   ╚═╝  ╚═╝╚═╝
+ DEBUG  Logging in None...
+Waiting for    0DEBUG No auto-send schedules foundssful.
+SUCCESS: The process "python.exe" with PID 6044 has been terminated.9, deleteMsg=0, srcId=3875505395421583395, destId=43SUCCESS: The process "python.exe" with PID 5256 has been terminated.
+Script stopped. Restarting...1583395 được tắt║██║
+• TÊN NGƯỜI DÙNG: Trần Dương21583395VENT GROUP  Tiến hành nhận sự kiện các nhóm...
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...Đức Nguyễn21583395  ╚═╝  ╚═╝╚═╝
+• LOẠI: ThreadType.GROUPương
+Waiting for    0DEBUG No auto-send schedules foundde '002390N4B' - Không tìm thấy
+SUCCESS: The process "python.exe" with PID 6128 has been terminated.
+SUCCESS: The process "python.exe" with PID 6624 has been terminated.
+Script stopped. Restarting...0819577  ███████║██║
+• TÊN NGƯỜI DÙNG: Hữu TúCPU: 9.1%█║   ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...Đức Nguyễn    ╚═╝   ╚═╝  ╚═╝╚═╝
+• LOẠI: ThreadType.GROUP..----
+Waiting for    0DEBUG No auto-send schedules foundause of interruption...
+SUCCESS: The process "python.exe" with PID 6428 has been terminated.
+SUCCESS: The process "python.exe" with PID 1160 has been terminated.
+Script stopped. Restarting...rt đang được tắt║██║ong hệ thống.
+The above exception was the direct cause of the following exception:
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...cent call last):╝   ╚═╝  ╚═╝╚═╝
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\websockets\sync\connection.py",Waiting for    0DEBUG No auto-send schedules found modules:done
+SUCCESS: The process "python.exe" with PID 752 has been terminated.
+SUCCESS: The process "python.exe" with PID 6624 has been terminated.
+Script stopped. Restarting...found EVENT GROUP  Tiến hành nhận sự kiện các nhóm...lib.py", line 148, in __exit__
+• ID NGƯỜI DÙNG: 2065786220959879744  ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...2517709526800.0%╝   ╚═╝  ╚═╝╚═╝rams\Python\Python313\Lib\site-packages\websockets\sync\connection.py",• TÊN NHÓM: Tâm An Shop 2.t
+Waiting for    0DEBUG No auto-send schedules foundde '002390n4B' - Không tìm thấyool(host='script.google.com', port=443)SUCCESS: The process "python.exe" with PID 6432 has been terminated.or) keepalive ping timeout; no close frame received
+SUCCESS: The process "python.exe" with PID 6028 has been terminated.
+Script stopped. Restarting...0819577 được tắt║██║
+• TÊN NGƯỜI DÙNG: Hữu Tú6331 sự kiện các nhóm...║0, 'cMsgID': 1773452698846, 'msgType': 1}], rIcon='/-heart', rType=5, sWaiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script... Shop 2PU: 16.4%╝   ╚═╝  ╚═╝╚═╝
+• LOẠI: ThreadType.GROUP952680583395
+Waiting for    0DEBUG No auto-send schedules found modules:done
+SUCCESS: The process "python.exe" with PID 5584 has been terminated.
+SUCCESS: The process "python.exe" with PID 244 has been terminated.
+Script stopped. Restarting...found║   ███████║██║ong hệ thống.
+ EVENT GROUP  Tiến hành nhận sự kiện các nhóm...║
+Waiting for 0 seconds, press CTRL+C to quit ...█║ectionPool(host='script.google.com', port=443): Read timed out. (read tStarting script... dụng CPU: 16.5%╝   ╚═╝  ╚═╝╚═╝
+ DEBUG  Logging in None...2680
+Waiting for    0DEBUG No auto-send schedules found69 when sending requests: Retry limittion timed out
+SUCCESS: The process "python.exe" with PID 1872 has been terminated.8215984, 'msgType': 1}], rIcon='/-heart', rType=5, sSUCCESS: The process "python.exe" with PID 3148 has been terminated.
+SUCCESS: The process "python.exe" with PID 5412 has been terminated.ện các nhóm...
+Script stopped. Restarting...1583395ànác nhóm...║
+• ID NHÓM: 4805458547434100571  ██║   ██║  ██║██║
+Waiting for 0 seconds, press CTRL+C to quit ...═╝
+Starting script....GROUP( AF ). Tâm An
+• THỜI GIAN NHẬN: 10:19:06 - 14/03/2026.
+Waiting for    0------------------------------ound
+SUCCESS: The process "python.exe" with PID 6988 has been terminated.47, uidTo=4441136025834945097, clientDelMsgId=177345SUCCESS: The process "python.exe" with PID 3092 has been terminated.pg-r.zdn.vn/jpg/6901334118179239916/2f7827fa726afc34Script stopped. Restarting...1583395 params='{"width":284,"convertible":"jxl","hd":"https:\\/\\/f65-zpg-r.zdn.vn\\/jpg\\• TÊN NGƯỜI DÙNG: Trần Dươngh Huy Đoàn4a57b.jpg","hdSize":4754,"height":146}', type='')
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...y Đoàn( AF ). Tâm An╚═╝  ╚═╝╚═╝
+• LOẠI: ThreadType.GROUP395421583395
+Waiting for    0DEBUG No auto-send schedules found modules:done
+SUCCESS: The process "python.exe" with PID 3180 has been terminated.1269084, 'msgType': 1}], rIcon='/-heart', rType=5, sSUCCESS: The process "python.exe" with PID 3296 has been terminated.
+Script stopped. Restarting...3591735  ███████║██║
+• ID NGƯỜI DÙNG: 3875505395421583395 các nhóm...║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...025834945097 Shop   ╚═╝  ╚═╝╚═╝
+• TÊN NHÓM: Tâm An Shop 1.
+Waiting for    0DEBUG No auto-send schedules found modules:done
+SUCCESS: The process "python.exe" with PID 6892 has been terminated.
+SUCCESS: The process "python.exe" with PID 2756 has been terminated.t Lượng thì nhắn email vào group bên dưới để các admScript stopped. Restarting...rt đang được tắt║██║
+ EVENT GROUP  Tiến hành nhận sự kiện các nhóm...║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...a nhanh:+ nhóm hỗ trợ 3: ╚═╝╚═╝
+ DEBUG  Logging in None...
+Waiting for    0DEBUG No auto-send schedules foundssful.
+SUCCESS: The process "python.exe" with PID 4436 has been terminated.
+SUCCESS: The process "python.exe" with PID 6984 has been terminated.
+Script stopped. Restarting...rt đang được tắt║██║
+DEBUG No auto-send schedules found║   ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ....║
+Starting script.....═══╝        ╚═╝   ╚═╝  ╚═╝╚═╝
+ CHECK CPU  Mức sử dụng CPU: 10.5%
+Waiting for    0DEBUG No auto-send schedules found modules:done
+SUCCESS: The process "python.exe" with PID 5232 has been terminated.r.zdn.vn/jpg/5563012657207891950/1a1ca3029b9215cc4c8SUCCESS: The process "python.exe" with PID 708 has been terminated.ca3029b9215cc4c83.jpg', childnumber=0, action='', parScript stopped. Restarting...5950654","hd":"https:\\/\\/f64-zpg-r.zdn.vn\\/jpg\\/5563012657207891950\\/1a1ca3029b9215cc4• TÊN NGƯỜI DÙNG: Sonyễn Danh Huy Đoàn type='').║
+Waiting for 0 seconds, press CTRL+C to quit ...█║
+Starting script...ỏ Đoàn328055950654  ╚═╝  ╚═╝╚═╝
+• LOẠI: ThreadType.GROUP Trương/03/2026
+Waiting for    0DEBUG No auto-send schedules found modules:1798
+SUCCESS: The process "python.exe" with PID 4300 has been terminated.
+SUCCESS: The process "python.exe" with PID 4744 has been terminated., description='', href='', thumb='', childnumber=0,
+Script stopped. Restarting...found║   ███████║██║en": 2, "st": "c_a24ffb"}, {"start": 2, "len": 38, "st": "c_ffaf00"}, { EVENT GROUP  Tiến hành nhận sự kiện các nhóm...║": 45, "len": 38, "st": "c_ffaf00"}, {"start": 0, "len": 40, "st": "f_3Waiting for 0 seconds, press CTRL+C to quit ...█║ 0, "len": 40, "st": "i"}], "ver": 0}', type='')
+Starting script... dụng CPU: 11.2%╝   ╚═╝  ╚═╝╚═╝
+ DEBUG  Logging in None...541209389
+Waiting for    0DEBUG No auto-send schedules found619524157310 thành công!23
+SUCCESS: The process "python.exe" with PID 1656 has been terminated. lúc 13:48:25)r/jpg/fb9b206a98c854960dd9/38851592690SUCCESS: The process "python.exe" with PID 7000 has been terminated.4, deleteMsg=0, srcId=0, destId=4441136025834945097)Script stopped. Restarting...5089248humb_width":360,"thumb_height":780,"tracking":{"subsource":"0","source":0},"hd":"htt• ID NGƯỜI DÙNG: 776492703541209389\/jpg\\/fb9b206a98c854960dd9\\/3885159269050784143.jpg","width":1290,"convertible":"jWaiting for 0 seconds, press CTRL+C to quit ....║
+Starting script...025834945097  ╚═╝   ╚═╝  ╚═╝╚═╝
+• TÊN NHÓM: Tâm An Shop 145097089248An đây là bot zalo', description='', href='', thumb='', childnumber=0, action='rtf',Waiting for    0DEBUG No auto-send schedules foundssful.ffb"}, {"start": 2, "len": 25, "st": "c_ffaf00"}, {"start": 0, "SUCCESS: The process "python.exe" with PID 2212 has been terminated.': 7619523975007, 'msgType': 1}], source=0, msgSendeSUCCESS: The process "python.exe" with PID 3736 has been terminated.": 0}', type='')
+Script stopped. Restarting...1583395 được tắt║██║
+• TÊN NGƯỜI DÙNG: Trần Dương21583395  ██╔══██║██║
+Waiting for 0 seconds, press CTRL+C to quit ....║
+Starting script... Dương Trương ╚═╝   ╚═╝  ╚═╝╚═╝
+• LOẠI: ThreadType.GROUP1PU: 7.8%
+Waiting for  445------------------------------.3%d------------------------------
+• Tin nhắn: Y10268 mất pr=5, rMsg=[{'cMsgID': 1773473836323, 'gMsgID': 7619656382017, 'msgType': 1}], source=0, msgSender='248090549', rIcon='/-heart')oto-stal-2.zdn• ID tin nhắn: 7619678941317046/3178336032728118141.jpg', childnumber=0, ac• ID tin nhắn: 761966009241521583395mb_width":192,"thumb_height":416,"tracking":{"subsourc• ID NGƯỜI DÙNG: 8607741423321933471GƯỜI DÙNG: 4708077200851923645g\\/9849d4faa55769093046\\/3178336032728118141.jpg","width":828,"convertible":"jxl"}• TÊN NGƯỜI DÙN• TÊN NGƯỜI DÙNG: Manh Truong█║██║
+• ID NHÓM: 4441136025834945097Tâm An Shop  ╚═╝╚═╝
+• TÊN NHÓM: Tâm ------------------------------
+• Tin nhắn: ko ạpe.GROUP30 - 14/03/2026.
+• ID tin nhắn: 7619757554713 14/03/2026les:done
+• ID NGƯỜI DÙNG: 4761122374850819577 CPU  Mức sử dụng CPU: 0.4%
+• TÊN NGƯỜI DÙNG: Hữu Túules found------------------------------
+• ID NHÓM: 436336117862362597MsgID': 7619678941317, 'cMsgID': 1773474317829, 'msgType': 1}], rIcon='/-heart', rType=5, source=6)
+• TÊN NHÓM: (B) A Đức Nguyễn51923645 các nhóm...
+• LOẠI: ThreadType.GROUP395421583395
+• THỜI GIAN NHẬN: 15:11:37 - 14/03/2026
+------------------------------Tâm An Shop
+4294965522: Tâm An Shop 1
+------------------------------4/03/2026
+• Tin nhắn: Message(title='', description='', href='https://photo-stal-30.zdn.vn/gr/jpg/832aad8455299977c038/3157329370135406754.jpg', thumb='https://photo-stal-30.zdn.vn/gr/jpg/832aad8455299977c038/3157329370135406754.jpg', childnumber=0, action='', params='{"height":1280,"thumb_width":1008,"thumb_height":630,"tracking":{"subsource":"0","source":0},"hd":"https:\\/\\/photo-stal-30.zdn.vn\\/gr\\/jpg\\/832aad8455299977c038\\/3157329370135406754.jpg","width":2048,"convertible":"jxl"}', type='') ID tin nhắn: 7619705146200ttps:\\/\\/photo-stal-19.zdn.vn\\/gr\\/jpg\\/6393a35ad4f718a941e6\\/2843609552114353856.jpg","width":828,"convertible":"jxl"}', type='')
+• ID tin nhắn: 761975461584450819577
+• ID NGƯỜI DÙNG: 2486577410750989673
+• TÊN NGƯỜI DÙNG: Phương Uyên3
+• ID NHÓM: 4363361178623625971
+• TÊN NHÓM: (B) A Đức Nguyễnn Tâm An Shop
+• LOẠI: ThreadType.GROUP30 - 14/03/2026
+• THỜI GIAN NHẬN: 15:10:41 - 14/03/2026---------------------
+------------------------------------------------------------
+• Tin nhắn: kerenzachristalfinn1@hotmail.com
+ycalstore123@NG: 481928139508077403
+00099CH2BỜI DÙNG: Tuấn Việt850819577
+2/28-5/29/20261916307381541113
+• ID tin nhắn: 7619754197931Free - Tâm An Shop
+• ID NGƯỜI DÙNG: 2486577410750989673
+• TÊN NGƯỜI DÙNG: Phương Uyên14/03/2026
+• ID NHÓM: 436336117862362597-------------------------------
+• TÊN NHÓM: (B) A Đức Nguyễn--
+• LOẠI: ThreadType.GROUP1412
+• THỜI GIAN NHẬN: 15:10:45 - 14/03/2026
+------------------------------------------------------------
+• Tin nhắn: bị sao á7499977451
+• ID tin nhắn: 7619754920778n Tâm An Shop
+• ID NGƯỜI DÙNG: 2486577410750989673
+• TÊN NGƯỜI DÙNG: Phương Uyên14/03/2026
+• ID NHÓM: 436336117862362597-
+• TÊN NHÓM: (B) A Đức Nguyễn--
+• LOẠI: ThreadType.GROUPhôi ja
+• THỜI GIAN NHẬN: 15:10:46 - 14/03/2026
+------------------------------------------------------------
+• Tin nhắn: có mất dữ liệu ko á
+• ID tin nhắn: 76197573534757
+• ID NGƯỜI DÙNG: 2486577410750989673
+• TÊN NGƯỜI DÙNG: Phương Uyên
+• ID NHÓM: 43633611786236259714/03/2026
+• TÊN NHÓM: (B) A Đức Nguyễn--------------------------------
+• LOẠI: ThreadType.GROUP renew hay gì ko
+• THỜI GIAN NHẬN: 15:11:33 - 14/03/2026S
+------------------------------------------------------------
+• Tin nhắn: sợ thì nên backup
+• ID tin nhắn: 76197578257357
+• ID NGƯỜI DÙNG: 4761122374850819577
+• TÊN NGƯỜI DÙNG: Hữu Tú
+• ID NHÓM: 43633611786236259714/03/202S6
+• TÊN NHÓM: (B) A Đức Nguyễn--
+• LOẠI: ThreadType.GROUP
+• THỜI GIAN NHẬN: 15:11:42 - 14/03/2026
+------------------------------
+
+ DEBUG  Reconnecting websocket because of interruption...------------------------------
+• Tin nhắn: Message(rMsg=[{'gMsgID': 7619738931778, 'cMsgID': 1773475542734, 'msgType': 1}], rIcon='/-heart', rType=5, source=6)
+• ID tin nhắn: 7619739546457
+• ID NGƯỜI DÙNG: 3875505395421583395
+• TÊN NGƯỜI DÙNG: Trần Dương
+• ID NHÓM: 3391916307381541113
+• TÊN NHÓM: Share Tài Khoản Free - Tâm An Shop
+• LOẠI: ThreadType.GROUP
+• THỜI GIAN NHẬN: 15:06:03 - 14/03/2026
+------------------------------
+
+
+------------------------------
+• Tin nhắn: a cần hỏi gì ạ
+• ID tin nhắn: 7619758476872
+• ID NGƯỜI DÙNG: 4761122374850819577
+• TÊN NGƯỜI DÙNG: Hữu Tú
+• ID NHÓM: 1945752197499977451
+• TÊN NHÓM: (AG) A Minh Thiện Tâm An Shop
+• LOẠI: ThreadType.GROUP
+• THỜI GIAN NHẬN: 15:11:55 - 14/03/2026
+------------------------------
+------------------------------
+• Tin nhắn: @All
+• ID tin nhắn: 7619754773349
+• ID NGƯỜI DÙNG: 2486577410750989673
+• TÊN NGƯỜI DÙNG: Phương Uyên
+• ID NHÓM: 436336117862362597
+• TÊN NHÓM: (B) A Đức Nguyễn
+• LOẠI: ThreadType.GROUP
+• THỜI GIAN NHẬN: 15:10:44 - 14/03/2026
+------------------------------
+------------------------------
+• Tin nhắn: oki nha
+• ID tin nhắn: 7619757776715
+• ID NGƯỜI DÙNG: 2486577410750989673
+• TÊN NGƯỜI DÙNG: Phương Uyên
+• ID NHÓM: 436336117862362597
+• TÊN NHÓM: (B) A Đức Nguyễn
+• LOẠI: ThreadType.GROUP
+• THỜI GIAN NHẬN: 15:11:46 - 14/03/2026
+------------------------------
+[0m
+
+
+
+[38;2;255;255;51m[1m------------------------------[0m
+[38;2;255;0;0m[1m• Tin nhắn: Message(rMsg=[{'gMsgID': 7619754560998, 'cMsgID': 1773475839536, 'msgType': 1}], rIcon='/-heart', rType=5, source=6)[0m
+[38;2;255;0;0m[1m• ID tin nhắn: 7619756376636[0m
+[38;2;245;245;220m[1m• ID NGƯỜI DÙNG: 3875505395421583395[0m
+[38;2;0;255;102m[1m• TÊN NGƯỜI DÙNG: Trần Dương[0m
+[38;2;255;136;0m[1m• ID NHÓM: 4441136025834945097[0m
+[38;2;255;255;0m[1m• TÊN NHÓM: Tâm An Shop 1[0m
+[38;2;0;255;255m[1m• LOẠI: ThreadType.GROUP[0m
+[38;2;143;0;255m[1m• THỜI GIAN NHẬN: 15:11:22 - 14/03/2026[0m
+[38;2;255;255;51m[1m------------------------------[0m[0m🔍 User 6978137527169045052 đang sử dụng lệnh passnet[0m[0m
+[0m[0m
+[0m
+[0m[0m[0m[0m
+[0m
+[0m
+[0m
+[0m[0m[0m[0m[0mSUCCESS: The process "python.exe" with PID 3892 has been terminated.
+SUCCESS: The process "python.exe" with PID 1264 has been terminated.
+Script stopped. Restarting...
+
+Waiting for 0 seconds, press CTRL+C to quit ...
+Starting script...
+
+Waiting for 1283DEBUG No auto-send schedules found619798683212 thành công!42
+ CHECK CPU  Mức sử dụng CPU: 2.7%8683212 sẽ được gỡ sau 30 giây (vào lúc 15:25:06)
+• Tin nhắn: Message(globalMsgId=7619798683212, cliMsgId=1773476676199, deleteMsg=0, srcId=0, destId=4441136025834945097)
+• ID tin nhắn: 761980027995650819577 được tắt║██║
+• ID NGƯỜI DÙNG: 776492703541209389EVENT GROUP  Tiến hành nhận sự kiện các nhóm...
+• TÊN NGƯỜI DÙNG: Tâm An395421583395  ██║  ██║██║
+• ID NHÓM: 4441136025834945097  ╚═╝   ╚═╝  ╚═╝╚═╝
+• TÊN NHÓM: Tâm An Shop 1450972.1%
+• LOẠI: ThreadType.GROUP16 - 14/03/2026
+• THỜI GIAN NHẬN: 15:25:06 - 14/03/2026
+------------------------------4/03/2026
+------------ 447DEBUG No auto-send schedules found------------------------------5.2%
+4294967124: Em cần mua youtube pre ạ
+• ID tin nhắn: 7619868742200bạn là:
+• ID NGƯỜI DÙNG: 7233439260879086473
+• TÊN NGƯỜI DÙNG: Ngọc Quý12
+• ID NHÓM: 900830025177095268009389
+SUCCESS: The process "python.exe" with PID 32 has been terminated.
+SUCCESS: The process "python.exe" with PID 2600 has been terminated.
+Script stopped. Restarting...14/03/2026
+------------------------------ CHECK CPU  Mức sử dụng CPU: 25.0%
+Waiting for 0 seconds, press CTRL+C to quit ...assnet------------------------------
+Starting script...------------
+• ID tin nhắn: 7619894244340
+Waiting for 1401D

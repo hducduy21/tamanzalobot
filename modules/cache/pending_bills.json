@@ -1,0 +1,17 @@
+{
+  "BILL_1760198373_2261": {
+    "bill_id": "BILL_1760198373_2261",
+    "amount": 100000,
+    "addinfo": "QR1760198373RVXOEL",
+    "qr_url": "https://img.vietqr.io/image/vcb-1061233835-compact.png?amount=100000&addInfo=QR1760198373RVXOEL",
+    "user_id": "7425738306630034756",
+    "thread_id": "5366422691182401170",
+    "app_name": "netflix",
+    "months": "12",
+    "warranty_code": "ABC123",
+    "created_time": "2025-10-11T22:59:33.337798",
+    "expire_time": "2025-10-11T23:09:33.337798",
+    "status": "expired",
+    "transaction_ref": null
+  }
+}

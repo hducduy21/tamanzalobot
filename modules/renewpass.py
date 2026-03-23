@@ -1,14 +1,30 @@
 import requests
 import threading
+import time
 from datetime import datetime
 from zlapi.models import Message, ThreadType
 from config import API_QUAN_LY, CONNECTION_TIMEOUT
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 des = {
     'version': "1.0.8",
     'credits': "Nguyễn Liên Mạnh",
     'description': "Kiểm tra key và lấy giá trị tương ứng từ API"
 }
+
+def create_session_with_retry():
+    """Tạo session với retry logic"""
+    session = requests.Session()
+    retry = Retry(
+        total=3,  # Số lần retry
+        backoff_factor=1,  # Đợi 1s, 2s, 4s giữa các lần retry
+        status_forcelist=[500, 502, 503, 504, 408],  # Retry với các status code này
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session
 
 def auto_unsend_message(client, message_obj, thread_id, thread_type, delay=30):
     """Tự động gỡ tin nhắn sau một khoảng thời gian."""
@@ -59,8 +75,23 @@ def handle_renewpass_command(message, message_object, thread_id, thread_type, au
     try:
         api_url = API_QUAN_LY
         print(f"🔍 [DEBUG] API URL: {api_url}")
-        response = requests.get(api_url, timeout=CONNECTION_TIMEOUT)
-        print(f"🔍 [DEBUG] API Status Code: {response.status_code}")
+        print(f"🔍 [DEBUG] Đang kết nối API... (timeout: {CONNECTION_TIMEOUT}s)")
+        
+        # Sử dụng session với retry
+        session = create_session_with_retry()
+        start_time = time.time()
+        
+        response = session.get(
+            api_url, 
+            timeout=CONNECTION_TIMEOUT,
+            headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Accept': 'application/json',
+            }
+        )
+        
+        elapsed_time = time.time() - start_time
+        print(f"🔍 [DEBUG] API Status Code: {response.status_code} (took {elapsed_time:.2f}s)")
         response.raise_for_status()
 
         try:
@@ -123,8 +154,15 @@ def handle_renewpass_command(message, message_object, thread_id, thread_type, au
             print(f"❌ User {author_id} tìm code '{username}' - Không tìm thấy")
             client.replyMessage(Message(text=f"❌ Không tìm thấy code '{username}' trong hệ thống."), message_object, thread_id, thread_type)
 
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.Timeout as e:
+        print(f"⏱️ [DEBUG] Timeout sau {CONNECTION_TIMEOUT}s: {str(e)}")
+        client.replyMessage(Message(text=f"⏱️ API quá chậm, vui lòng thử lại sau."), message_object, thread_id, thread_type)
+    except requests.exceptions.ConnectionError as e:
         print(f"🚫 [DEBUG] Lỗi kết nối: {type(e).__name__}: {str(e)}")
+        print(f"🚫 Lỗi kết nối API cho user {author_id}: {str(e)}")
+        client.replyMessage(Message(text=f"🚫 Không thể kết nối đến API. Vui lòng thử lại sau."), message_object, thread_id, thread_type)
+    except requests.exceptions.RequestException as e:
+        print(f"🚫 [DEBUG] Lỗi request: {type(e).__name__}: {str(e)}")
         print(f"🚫 Lỗi kết nối API cho user {author_id}: {str(e)}")
         client.replyMessage(Message(text=f"🚫 Lỗi khi kết nối đến API: {str(e)}"), message_object, thread_id, thread_type)
     except Exception as e:

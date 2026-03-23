@@ -395,7 +395,7 @@ def check_autosend_messages(self):
         logger.error(f"Error sending auto message: {e}")
 
 class Client(ZaloAPI):
-    subprocess.Popen(['python3', 'utils/clearCPU.py'])
+    subprocess.Popen(['python', 'utils/clearCPU.py'])
 
     def __init__(self, api_key, secret_key, imei, session_cookies, *args, reset_interval=7200, **kwargs):
         super().__init__(api_key, secret_key, imei=imei, session_cookies=session_cookies)

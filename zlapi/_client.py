@@ -4223,7 +4223,7 @@ class ZaloAPI(object):
             "Cookie": raw_cookies
         }
         
-        with connect(url, additional_headers=headers) as ws:
+        with connect(url, additional_headers=headers, open_timeout=50, close_timeout=10) as ws:
             pool.submit(self._fix_recv)
             self.onListening()
             self._listening = True

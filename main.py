@@ -395,7 +395,7 @@ def check_autosend_messages(self):
         logger.error(f"Error sending auto message: {e}")
 
 class Client(ZaloAPI):
-    subprocess.Popen(['python', 'utils/clearCPU.py'])
+    subprocess.Popen(['python3', 'utils/clearCPU.py'])
 
     def __init__(self, api_key, secret_key, imei, session_cookies, *args, reset_interval=7200, **kwargs):
         super().__init__(api_key, secret_key, imei=imei, session_cookies=session_cookies)
@@ -530,21 +530,69 @@ class Client(ZaloAPI):
                         logger.info(f"[DEBUG] Answer check handled for message: {message}")
                         return
 
+                # XỬ LÝ LỆNH - QUAN TRỌNG NHẤT
                 if isinstance(message, str):
                     logger.info(f"[DEBUG] Handling command: {message[:50]}...")
                     self.command_handler.handle_command(message, author_id, message_object, thread_id, thread_type)
-                        
+                
+                # Skip bot's own message
+                if author_id == uid:
+                    logger.info(f"[DEBUG] Skipping bot's own message")
+                    return
+
+                # FETCH THÔNG TIN ĐỂ LOG (KHÔNG QUAN TRỌNG - CÓ THỂ BỎ QUA NẾU LỖI)
+                author_name = 'Unknown'
+                group_name = 'Unknown'
+                
                 try:
                     author_info = self.fetchUserInfo(author_id).changed_profiles.get(author_id, {})
                     author_name = author_info.get('zaloName', 'Unknown')
+                except ZaloAPIException as e:
+                    logger.warning(f"[WARN] Rate limit khi fetch user info: {e}")
+                except Exception as e:
+                    logger.warning(f"[WARN] Không thể fetch user info: {e}")
 
-                    group_info = self.fetchGroupInfo(thread_id)
-                    group_name = group_info.gridInfoMap.get(thread_id, {}).get('name', 'None')
-                    if group_name == 'None':
+                try:
+                    # Kiểm tra cache trước
+                    cache_key = f"group_{thread_id}"
+                    current_time_cache = time.time()
+                    
+                    if cache_key in self.group_info_cache:
+                        cached_data = self.group_info_cache[cache_key]
+                        # Cache 5 phút
+                        if current_time_cache - cached_data['timestamp'] < 300:
+                            group_name = cached_data['name']
+                        else:
+                            # Cache hết hạn, fetch mới
+                            group_info = self.fetchGroupInfo(thread_id)
+                            group_name = group_info.gridInfoMap.get(thread_id, {}).get('name', 'Unknown')
+                            self.group_info_cache[cache_key] = {
+                                'name': group_name,
+                                'timestamp': current_time_cache
+                            }
+                    else:
+                        # Chưa có cache, fetch mới
+                        group_info = self.fetchGroupInfo(thread_id)
+                        group_name = group_info.gridInfoMap.get(thread_id, {}).get('name', 'Unknown')
+                        self.group_info_cache[cache_key] = {
+                            'name': group_name,
+                            'timestamp': current_time_cache
+                        }
+                        
+                    if group_name == 'None' or not group_name:
                         group_name = 'Private Chat'
+                        
+                except ZaloAPIException as e:
+                    logger.warning(f"[WARN] Rate limit khi fetch group info: {e}")
+                    # Thử lấy từ cache cũ nếu có
+                    if cache_key in self.group_info_cache:
+                        group_name = self.group_info_cache[cache_key].get('name', 'Unknown')
+                except Exception as e:
+                    logger.warning(f"[WARN] Không thể fetch group info: {e}")
 
+                # In log thông tin (không quan trọng)
+                try:
                     current_time = time.strftime("%H:%M:%S - %d/%m/%Y", time.localtime())
-
                     colors_selected = random.sample(colors1, 9)
                     output = (
                         f"{hex_to_ansi(colors_selected[0])}{Style.BRIGHT}------------------------------{Style.RESET_ALL}\n"
@@ -559,12 +607,12 @@ class Client(ZaloAPI):
                         f"{hex_to_ansi(colors_selected[0])}{Style.BRIGHT}------------------------------{Style.RESET_ALL}"
                     )
                     print(output)
+                except Exception as e:
+                    logger.warning(f"[WARN] Không thể in log output: {e}")
 
-                    if author_id == uid:
-                        logger.info(f"[DEBUG] Skipping bot's own message")
-                        return
-
-                    if thread_type == ThreadType.USER:
+                # Auto-reply cho tin nhắn riêng
+                if thread_type == ThreadType.USER:
+                    try:
                         now = time.time()
                         if author_id in temp_thread_storage:
                             last_message_time = temp_thread_storage[author_id]
@@ -584,9 +632,9 @@ class Client(ZaloAPI):
                         self.replyMessage(Message(text=msg, style=styles), message_object, thread_id, thread_type)
                         temp_thread_storage[author_id] = now
                         logger.info(f"[DEBUG] Sent auto-reply to user: {author_id}")
+                    except Exception as e:
+                        logger.error(f"Error sending auto-reply: {e}")
 
-                except Exception as e:
-                    logger.error(f"Error processing message: {e}\n{traceback.format_exc()}")
         except Exception as e:
             logger.error(f"Critical error in onMessage: {e}\n{traceback.format_exc()}")
 

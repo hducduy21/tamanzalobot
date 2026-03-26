@@ -6,6 +6,7 @@ import sqlite3
 import subprocess
 import json
 import random
+import platform 
 from config import API_KEY, SECRET_KEY, IMEI, SESSION_COOKIES, ADMIN, CONNECTION_TIMEOUT
 from zlapi.models import *
 from zlapi.models import Message, MultiMsgStyle, MessageStyle, ThreadType, GroupEventType
@@ -31,6 +32,24 @@ from utils.resource_monitor import resource_monitor
 
 temp_thread_storage = {}
 uid = "776580269332100397"
+
+def disable_quickedit():
+    if platform.system() == 'Windows':
+        try:
+            import ctypes
+            kernel32 = ctypes.windll.kernel32
+            handle = kernel32.GetStdHandle(-10)
+            mode = ctypes.c_ulong()
+            kernel32.GetConsoleMode(handle, ctypes.byref(mode))
+            ENABLE_QUICK_EDIT_MODE = 0x0040
+            ENABLE_EXTENDED_FLAGS = 0x0080
+            mode.value = (mode.value & ~ENABLE_QUICK_EDIT_MODE) | ENABLE_EXTENDED_FLAGS
+            kernel32.SetConsoleMode(handle, mode)
+            print("QuickEdit Mode: DISABLED (CMD se khong bi dung khi click chuot)")
+        except Exception as e:
+            print(f"Khong the tat QuickEdit Mode: {e}")
+
+disable_quickedit()
 
 init()
 
@@ -406,6 +425,7 @@ class Client(ZaloAPI):
         self.session = requests.Session()
         self.restricted_keywords = self.load_restricted_keywords()
         self._message_lock = threading.Lock()
+        self.group_info_cache = {} 
         
         retry_strategy = Retry(
             total=5,

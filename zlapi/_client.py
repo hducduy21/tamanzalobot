@@ -4193,12 +4193,26 @@ class ZaloAPI(object):
     
     def _fix_recv(self):
         old_timestamp = int(time.time())
-        time.sleep(50 * 60)
+        time.sleep(30 * 60)
         self._start_fix = True
         self._condition.set()
+
+    def _watchdog(self):
+        """Watchdog: force reconnect if no data received for 5 minutes."""
+        WATCHDOG_TIMEOUT = 5 * 60
+        while not self._condition.is_set():
+            time.sleep(30)
+            if hasattr(self, '_last_recv_time') and self._last_recv_time:
+                elapsed = time.time() - self._last_recv_time
+                if elapsed > WATCHDOG_TIMEOUT:
+                    logger.warning(f"[WATCHDOG] No data received for {int(elapsed)}s, forcing reconnect...")
+                    self._start_fix = True
+                    self._condition.set()
+                    break
     
     def _listen_ws(self, thread=False, reconnect=5):
         self._condition.clear()
+        self._last_recv_time = time.time()
         params = {"zpw_ver": 645, "zpw_type": 30, "t": _util.now()}
         url = self._state._config["zpw_ws"][0] + "?" + urllib.parse.urlencode(params)
         
@@ -4225,11 +4239,13 @@ class ZaloAPI(object):
         
         with connect(url, additional_headers=headers, open_timeout=50, close_timeout=10) as ws:
             pool.submit(self._fix_recv)
+            pool.submit(self._watchdog)
             self.onListening()
             self._listening = True
             while not self._condition.is_set():
                 try:
-                    data = ws.recv()
+                    data = ws.recv(timeout=60)
+                    self._last_recv_time = time.time()
                     if not isinstance(data, bytes):
                         continue
                     
@@ -4345,6 +4361,10 @@ class ZaloAPI(object):
                     pid = os.getpid()
                     os.kill(pid, signal.SIGTERM)
                 
+                except TimeoutError:
+                    # ws.recv timeout - ket noi co the van song, tiep tuc vong lap
+                    continue
+                
                 except (websockets.ConnectionClosedOK, websockets.exceptions.ConnectionClosedOK):
                     self._condition.set()
                     ws.close()
@@ -4358,6 +4378,9 @@ class ZaloAPI(object):
                 except Exception as e:
                     if str(e) == "sent 1000 (OK); then received 1000 (OK) NORMAL_CLOSURE":
                         pass
+                    
+                    elif "timed out" in str(e).lower() or "timeout" in str(e).lower():
+                        continue
                     
                     else:
                         self._listening = False

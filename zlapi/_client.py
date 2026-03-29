@@ -4198,21 +4198,22 @@ class ZaloAPI(object):
         self._condition.set()
 
     def _watchdog(self):
-        """Watchdog: force reconnect if no data received for 5 minutes."""
-        WATCHDOG_TIMEOUT = 5 * 60
+        """Watchdog: force reconnect if no data received for 3 minutes."""
+        WATCHDOG_TIMEOUT = 3 * 60
         while not self._condition.is_set():
-            time.sleep(30)
+            time.sleep(20)
             if hasattr(self, '_last_recv_time') and self._last_recv_time:
                 elapsed = time.time() - self._last_recv_time
                 if elapsed > WATCHDOG_TIMEOUT:
                     logger.warning(f"[WATCHDOG] No data received for {int(elapsed)}s, forcing reconnect...")
                     self._start_fix = True
                     self._condition.set()
-                    break
+                    return
     
     def _listen_ws(self, thread=False, reconnect=5):
         self._condition.clear()
         self._last_recv_time = time.time()
+        self._start_fix = False
         params = {"zpw_ver": 645, "zpw_type": 30, "t": _util.now()}
         url = self._state._config["zpw_ws"][0] + "?" + urllib.parse.urlencode(params)
         
@@ -4237,7 +4238,8 @@ class ZaloAPI(object):
             "Cookie": raw_cookies
         }
         
-        with connect(url, additional_headers=headers, open_timeout=50, close_timeout=10) as ws:
+        try:
+          with connect(url, additional_headers=headers, open_timeout=50, close_timeout=10) as ws:
             pool.submit(self._fix_recv)
             pool.submit(self._watchdog)
             self.onListening()
@@ -4373,7 +4375,7 @@ class ZaloAPI(object):
                 except (websockets.ConnectionClosedError, websockets.exceptions.ConnectionClosedError):
                     self._start_fix = True
                     self._condition.set()
-                    ws.close()
+                    break
                 
                 except Exception as e:
                     if str(e) == "sent 1000 (OK); then received 1000 (OK) NORMAL_CLOSURE":
@@ -4383,27 +4385,32 @@ class ZaloAPI(object):
                         continue
                     
                     else:
-                        self._listening = False
-                        self._start_fix = False
+                        logger.error(f"[WS] Unexpected error in recv loop: {e}")
+                        self._start_fix = True
                         self._condition.set()
-                        ws.close()
-                        self.onErrorCallBack(e)
-                        if self.run_forever:
-                            while not self._listening:
-                                try:
-                                    logger.debug("Run forever mode is enabled, trying to reconnect...")
-                                    self._listen_ws(thread, reconnect)
-                                except:
-                                    pass
-                                
-                                time.sleep(reconnect)
-                
-                finally:
-                    self._listening = False
+                        break
+        
+        except KeyboardInterrupt:
+            print("\x1b[1K")
+            logger.warning("Stop Listen Because KeyboardInterrupt Exception!")
+            pid = os.getpid()
+            os.kill(pid, signal.SIGTERM)
+        
+        except Exception as e:
+            logger.error(f"[WS] Connection error: {e}")
+            self._start_fix = True
+        
+        finally:
+            self._listening = False
         
         if self._start_fix:
             logger.debug("Reconnecting websocket because of interruption...")
             self._start_fix = False
+            time.sleep(reconnect)
+            self._listen_ws(thread, reconnect)
+        elif hasattr(self, 'run_forever') and self.run_forever:
+            logger.debug("Run forever mode is enabled, trying to reconnect...")
+            time.sleep(reconnect)
             self._listen_ws(thread, reconnect)
     
     def startListening(self, delay=1, thread=False, type="websocket", reconnect=5):

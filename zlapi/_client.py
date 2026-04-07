@@ -4192,27 +4192,39 @@ class ZaloAPI(object):
             self._listening = False
     
     def _fix_recv(self):
-        old_timestamp = int(time.time())
-        time.sleep(30 * 60)
-        self._start_fix = True
-        self._condition.set()
+        """Force reconnect every 30 minutes to keep connection fresh."""
+        try:
+            time.sleep(30 * 60)
+            if self._listening:
+                logger.debug("[FIX_RECV] 30 minutes passed, forcing reconnect...")
+                self._start_fix = True
+                self._condition.set()
+        except Exception as e:
+            logger.error(f"[FIX_RECV] Thread crashed: {e}")
 
     def _watchdog(self):
         """Watchdog: force reconnect if no data received for 3 minutes."""
         WATCHDOG_TIMEOUT = 3 * 60
-        while not self._condition.is_set():
-            time.sleep(20)
-            if hasattr(self, '_last_recv_time') and self._last_recv_time:
-                elapsed = time.time() - self._last_recv_time
-                if elapsed > WATCHDOG_TIMEOUT:
-                    logger.warning(f"[WATCHDOG] No data received for {int(elapsed)}s, forcing reconnect...")
-                    self._start_fix = True
-                    self._condition.set()
-                    return
+        try:
+            while not self._condition.is_set():
+                time.sleep(20)
+                try:
+                    if hasattr(self, '_last_recv_time') and self._last_recv_time:
+                        elapsed = time.time() - self._last_recv_time
+                        if elapsed > WATCHDOG_TIMEOUT:
+                            logger.warning(f"[WATCHDOG] No data received for {int(elapsed)}s, forcing reconnect...")
+                            self._start_fix = True
+                            self._condition.set()
+                            return
+                except Exception as e:
+                    logger.error(f"[WATCHDOG] Error checking timeout: {e}")
+        except Exception as e:
+            logger.error(f"[WATCHDOG] Thread crashed: {e}")
     
     def _listen_ws(self, thread=False, reconnect=5):
         self._condition.clear()
         self._last_recv_time = time.time()
+        self._last_heartbeat_log = time.time()
         self._start_fix = False
         params = {"zpw_ver": 645, "zpw_type": 30, "t": _util.now()}
         url = self._state._config["zpw_ws"][0] + "?" + urllib.parse.urlencode(params)
@@ -4240,8 +4252,11 @@ class ZaloAPI(object):
         
         try:
           with connect(url, additional_headers=headers, open_timeout=50, close_timeout=10) as ws:
-            pool.submit(self._fix_recv)
-            pool.submit(self._watchdog)
+            # Use dedicated threads instead of pool to ensure they always run
+            fix_thread = threading.Thread(target=self._fix_recv, daemon=True)
+            fix_thread.start()
+            watchdog_thread = threading.Thread(target=self._watchdog, daemon=True)
+            watchdog_thread.start()
             self.onListening()
             self._listening = True
             while not self._condition.is_set():
@@ -4365,6 +4380,13 @@ class ZaloAPI(object):
                 
                 except TimeoutError:
                     # ws.recv timeout - ket noi co the van song, tiep tuc vong lap
+                    # Log heartbeat mỗi 60s để keep_alive biết bot còn sống
+                    if hasattr(self, '_last_heartbeat_log') and self._last_heartbeat_log:
+                        if time.time() - self._last_heartbeat_log >= 60:
+                            logger.debug("[WS] Heartbeat - connection alive, waiting for messages...")
+                            self._last_heartbeat_log = time.time()
+                    else:
+                        self._last_heartbeat_log = time.time()
                     continue
                 
                 except (websockets.ConnectionClosedOK, websockets.exceptions.ConnectionClosedOK):
@@ -4407,11 +4429,21 @@ class ZaloAPI(object):
             logger.debug("Reconnecting websocket because of interruption...")
             self._start_fix = False
             time.sleep(reconnect)
-            self._listen_ws(thread, reconnect)
+            try:
+                self._listen_ws(thread, reconnect)
+            except Exception as e:
+                logger.error(f"[WS] Reconnect failed: {e}, retrying in {reconnect}s...")
+                time.sleep(reconnect)
+                self._listen_ws(thread, reconnect)
         elif hasattr(self, 'run_forever') and self.run_forever:
             logger.debug("Run forever mode is enabled, trying to reconnect...")
             time.sleep(reconnect)
-            self._listen_ws(thread, reconnect)
+            try:
+                self._listen_ws(thread, reconnect)
+            except Exception as e:
+                logger.error(f"[WS] Run forever reconnect failed: {e}, retrying...")
+                time.sleep(reconnect)
+                self._listen_ws(thread, reconnect)
     
     def startListening(self, delay=1, thread=False, type="websocket", reconnect=5):
         """Start listening from an external event loop.

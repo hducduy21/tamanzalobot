@@ -195,7 +195,7 @@ def create_notification_image(self, event_message, group_name, formatted_time, m
         try:
             if avatar_url:
                 logger.info(f"[DEBUG] Fetching avatar from: {avatar_url}")
-                response = self.session.get(avatar_url, timeout=CONNECTION_TIMEOUT)
+                response = requests.get(avatar_url, timeout=CONNECTION_TIMEOUT)
                 if response.status_code == 200:
                     avatar_path = "temp_avatar.png"
                     with open(avatar_path, "wb") as f:
@@ -443,9 +443,7 @@ class Client(ZaloAPI):
         self.session.mount('https://', adapter)
         
         # Set timeouts
-        self.session.request = lambda *args, **kwargs: requests.Session.request(
-            self.session, *args, timeout=kwargs.get('timeout', CONNECTION_TIMEOUT), **kwargs
-        )
+        self.default_timeout = CONNECTION_TIMEOUT
 
         logger.logger('EVENT GROUP', 'Starting to receive group events...')
         

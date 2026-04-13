@@ -1,6 +1,7 @@
 @echo off
 title Zalo Bot - Keep Alive
 cd /d "%~dp0"
+chcp 65001 >nul
 echo Starting Zalo Bot with Keep Alive...
 echo.
 echo Rules:

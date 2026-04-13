@@ -160,12 +160,19 @@ def main():
     while True:
         print(f"[KEEP_ALIVE] Starting main.py at {time.strftime('%Y-%m-%d %H:%M:%S')}")
         
+        env = os.environ.copy()
+        env["PYTHONUTF8"] = "1"
+        env["PYTHONIOENCODING"] = "utf-8"
+
         process = subprocess.Popen(
-            [sys.executable, 'main.py'],
+            [sys.executable, "-X", "utf8", "main.py"],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
-            bufsize=1
+            encoding="utf-8",
+            errors="replace",
+            bufsize=1,
+            env=env
         )
         
         last_check = time.time()
@@ -213,6 +220,16 @@ def main():
             print(f"[KEEP_ALIVE] Error: {e}")
         
         exit_code = process.returncode
+        try:
+            if process.stdout:
+                remaining = process.stdout.read()
+                if remaining:
+                    print("[KEEP_ALIVE] --- main.py last output ---")
+                    print(remaining, end="" if remaining.endswith("\n") else "\n")
+                    print("[KEEP_ALIVE] --- end ---")
+        except Exception as e:
+            print(f"[KEEP_ALIVE] Failed to read remaining output: {e}")
+
         print(f"[KEEP_ALIVE] Bot ended with code {exit_code}, restarting in 10s...")
         time.sleep(10)
 

@@ -503,12 +503,13 @@ class Client(ZaloAPI):
                 time.sleep(60)
 
     def onEvent(self, event_data, event_type):
-        try:
-            logger.info(f"[DEBUG] Received event: {event_type}")
-            thread = threading.Thread(target=noti, args=(self, event_data, event_type), daemon=True)
-            thread.start()
-        except Exception as e:
-            logger.error(f"Error in onEvent: {e}")
+        # try:
+        #     logger.info(f"[DEBUG] Received event: {event_type}")
+        #     thread = threading.Thread(target=noti, args=(self, event_data, event_type), daemon=True)
+        #     thread.start()
+        # except Exception as e:
+        #     logger.error(f"Error in onEvent: {e}")
+        return
 
     @safe_execute
     def onMessage(self, mid, author_id, message, message_object, thread_id, thread_type):

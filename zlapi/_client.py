@@ -4194,7 +4194,11 @@ class ZaloAPI(object):
     def _fix_recv(self):
         """Force reconnect every 30 minutes to keep connection fresh."""
         try:
-            time.sleep(30 * 60)
+            deadline = time.time() + 30 * 60
+            while time.time() < deadline:
+                if self._condition.is_set():
+                    return
+                time.sleep(10)
             if self._listening:
                 logger.debug("[FIX_RECV] 30 minutes passed, forcing reconnect...")
                 self._start_fix = True
@@ -4222,228 +4226,218 @@ class ZaloAPI(object):
             logger.error(f"[WATCHDOG] Thread crashed: {e}")
     
     def _listen_ws(self, thread=False, reconnect=5):
-        self._condition.clear()
-        self._last_recv_time = time.time()
-        self._last_heartbeat_log = time.time()
-        self._start_fix = False
-        params = {"zpw_ver": 645, "zpw_type": 30, "t": _util.now()}
-        url = self._state._config["zpw_ws"][0] + "?" + urllib.parse.urlencode(params)
-        
-        user_agent = self._state._headers.get("User-Agent") or _util.HEADERS["User-Agent"]
-        raw_cookies = _util.dict_to_raw_cookies(self._state.get_cookies())
-        
-        if not raw_cookies:
-            raise ZaloUserError("Unable to load cookies! Probably due to incorrect cookie format (cookies must be dict)")
-        
-        headers = {
-            "Accept-Encoding": "gzip, deflate, br, zstd",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Cache-Control": "no-cache",
-            "Connection": "Upgrade",
-            "Host": urllib.parse.urlparse(url).netloc,
-            "Origin": "https://chat.zalo.me",
-            "Pargma": "no-cache",
-            "Sec-Websocket-Extensions": "permessage-deflate; client_max_window_bits",
-            "Sec-Websocket-Version": "13",
-            "Upgrade": "websocket",
-            "User-Agent": user_agent,
-            "Cookie": raw_cookies
-        }
-        
-        try:
-          with connect(url, additional_headers=headers, open_timeout=50, close_timeout=10) as ws:
-            # Use dedicated threads instead of pool to ensure they always run
-            fix_thread = threading.Thread(target=self._fix_recv, daemon=True)
-            fix_thread.start()
-            watchdog_thread = threading.Thread(target=self._watchdog, daemon=True)
-            watchdog_thread.start()
-            self.onListening()
-            self._listening = True
-            while not self._condition.is_set():
-                try:
-                    data = ws.recv(timeout=60)
-                    self._last_recv_time = time.time()
-                    if not isinstance(data, bytes):
-                        continue
-                    
-                    encodedHeader = data[:4]
-                    n, cmd, s = _util.getHeader(encodedHeader)
-                    
-                    dataToDecode = data[4:]
-                    decodedData = dataToDecode.decode("utf-8")
-                    if not decodedData:
-                        continue
-                    
-                    parsed = json.loads(decodedData)
-                    if n == 1 and cmd == 1 and s == 1 and "key" in parsed:
-                        self.ws_key = parsed["key"]
-                        continue
-                    
-                    if not hasattr(self, "ws_key"):
-                        logger.error("Unable to decrypt data because key not found")
-                        continue
-                    
-                    parsedData = _util.zws_decode(parsed, self.ws_key)
-                    if n == 1 and cmd == 3000 and s == 0:
-                        logger.warning("Another connection is opened, closing this one")
-                        ws.close()
-                    
-                    elif n == 1 and cmd == 501 and s == 0:
+        while True:
+            self._condition.clear()
+            self._last_recv_time = time.time()
+            self._last_heartbeat_log = time.time()
+            self._start_fix = False
+            params = {"zpw_ver": 645, "zpw_type": 30, "t": _util.now()}
+            url = self._state._config["zpw_ws"][0] + "?" + urllib.parse.urlencode(params)
+
+            user_agent = self._state._headers.get("User-Agent") or _util.HEADERS["User-Agent"]
+            raw_cookies = _util.dict_to_raw_cookies(self._state.get_cookies())
+
+            if not raw_cookies:
+                raise ZaloUserError("Unable to load cookies! Probably due to incorrect cookie format (cookies must be dict)")
+
+            headers = {
+                "Accept-Encoding": "gzip, deflate, br, zstd",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Cache-Control": "no-cache",
+                "Connection": "Upgrade",
+                "Host": urllib.parse.urlparse(url).netloc,
+                "Origin": "https://chat.zalo.me",
+                "Pargma": "no-cache",
+                "Sec-Websocket-Extensions": "permessage-deflate; client_max_window_bits",
+                "Sec-Websocket-Version": "13",
+                "Upgrade": "websocket",
+                "User-Agent": user_agent,
+                "Cookie": raw_cookies
+            }
+
+            try:
+              with connect(url, additional_headers=headers, open_timeout=50, close_timeout=10) as ws:
+                fix_thread = threading.Thread(target=self._fix_recv, daemon=True)
+                fix_thread.start()
+                watchdog_thread = threading.Thread(target=self._watchdog, daemon=True)
+                watchdog_thread.start()
+                self.onListening()
+                self._listening = True
+                while not self._condition.is_set():
+                    try:
+                        data = ws.recv(timeout=60)
+                        self._last_recv_time = time.time()
+                        if not isinstance(data, bytes):
+                            continue
+
+                        encodedHeader = data[:4]
+                        n, cmd, s = _util.getHeader(encodedHeader)
+
+                        dataToDecode = data[4:]
+                        decodedData = dataToDecode.decode("utf-8")
+                        if not decodedData:
+                            continue
+
+                        parsed = json.loads(decodedData)
+                        if n == 1 and cmd == 1 and s == 1 and "key" in parsed:
+                            self.ws_key = parsed["key"]
+                            continue
+
+                        if not hasattr(self, "ws_key"):
+                            logger.error("Unable to decrypt data because key not found")
+                            continue
+
                         parsedData = _util.zws_decode(parsed, self.ws_key)
-                        userMsgs = parsedData["data"]["msgs"]
-                        
-                        for message in userMsgs:
-                            msgObj = MessageObject.fromDict(message, None)
-                            [
-                                pool.submit(self.onMessage, msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.uidFrom) or msgObj.idTo), ThreadType.USER)
-                                if thread else
-                                self.onMessage(msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.uidFrom) or msgObj.idTo), ThreadType.USER)
-                            ]
-                    
-                    elif n == 1 and cmd == 521 and s == 0:
-                        groupMsgs = parsedData["data"]["groupMsgs"]
-                        
-                        try:
-                            for message in groupMsgs:
-                                messages = self.getRecentGroup(message["idTo"])["groupMsgs"]
-                                message = next((msg for msg in messages if msg["msgId"] == message["msgId"]), message)
-                        except:
-                            pass
-                            
-                        msgObj = MessageObject.fromDict(message, None)
-                        [
-                            pool.submit(self.onMessage, msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.idTo) or self.uid), ThreadType.GROUP)
-                            if thread else
-                            self.onMessage(msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.idTo) or self.uid), ThreadType.GROUP)
-                        ]
-                    
-                    elif n == 1 and cmd in [502, 522, 504, 524] and s == 0:
-                        # Delivereds, Seen, Clear Unread, ...
-                        continue
-                    
-                    elif n == 1 and cmd == 602 and s == 0:
-                        # Typing Event
-                        continue
-                    
-                    elif n == 1 and cmd == 601 and s == 0:
-                        controls = parsedData["data"].get("controls", [])
-                        for control in controls:
-                            if control["content"]["act_type"] == "group":
-                                
-                                if control["content"]["act"] == "join_reject":
-                                    continue
-                                
-                                groupEventData = json.loads(control["content"]["data"]) if isinstance(control["content"]["data"], str) else control["content"]["data"]
-                                groupEventType = _util.getGroupEventType(control["content"]["act"])
-                                event_data = EventObject.fromDict(groupEventData)
-                                event_type = groupEventType
+                        if n == 1 and cmd == 3000 and s == 0:
+                            logger.warning("Another connection is opened, closing this one")
+                            ws.close()
+
+                        elif n == 1 and cmd == 501 and s == 0:
+                            parsedData = _util.zws_decode(parsed, self.ws_key)
+                            userMsgs = parsedData["data"]["msgs"]
+
+                            for message in userMsgs:
+                                msgObj = MessageObject.fromDict(message, None)
                                 [
-                                    pool.submit(self.onEvent, event_data, event_type)
+                                    pool.submit(self.onMessage, msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.uidFrom) or msgObj.idTo), ThreadType.USER)
                                     if thread else
-                                    self.onEvent(event_data, event_type)
+                                    self.onMessage(msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.uidFrom) or msgObj.idTo), ThreadType.USER)
                                 ]
-                        
-                        continue
-                    
-                    elif cmd == 612:
-                        reacts = parsedData["data"].get("reacts", [])
-                        reactGroups = parsedData["data"].get("reactGroups", [])
-                        
-                        for react in reacts:
-                            react["content"] = json.loads(react["content"])
-                            msgObj = MessageObject.fromDict(react, None)
-                            [
-                                pool.submit(self.onMessage, msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.uidFrom) or msgObj.idTo), ThreadType.USER)
-                                if thread else
-                                self.onMessage(msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.uidFrom) or msgObj.idTo), ThreadType.USER)
-                            ]
-                        
-                        for reactGroup in reactGroups:
-                            reactGroup["content"] = json.loads(reactGroup["content"])
-                            msgObj = MessageObject.fromDict(reactGroup, None)
+
+                        elif n == 1 and cmd == 521 and s == 0:
+                            groupMsgs = parsedData["data"]["groupMsgs"]
+
+                            try:
+                                for message in groupMsgs:
+                                    messages = self.getRecentGroup(message["idTo"])["groupMsgs"]
+                                    message = next((msg for msg in messages if msg["msgId"] == message["msgId"]), message)
+                            except:
+                                pass
+
+                            msgObj = MessageObject.fromDict(message, None)
                             [
                                 pool.submit(self.onMessage, msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.idTo) or self.uid), ThreadType.GROUP)
                                 if thread else
                                 self.onMessage(msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.idTo) or self.uid), ThreadType.GROUP)
                             ]
-                    
-                    else:
-                        continue
-                
-                except KeyboardInterrupt:
-                    self._condition.set()
-                    ws.close()
-                    print("\x1b[1K")
-                    logger.warning("Stop Listen Because KeyboardInterrupt Exception!")
-                    pid = os.getpid()
-                    os.kill(pid, signal.SIGTERM)
-                
-                except TimeoutError:
-                    # ws.recv timeout - ket noi co the van song, tiep tuc vong lap
-                    # Log heartbeat mỗi 60s để keep_alive biết bot còn sống
-                    if hasattr(self, '_last_heartbeat_log') and self._last_heartbeat_log:
-                        if time.time() - self._last_heartbeat_log >= 60:
-                            logger.debug("[WS] Heartbeat - connection alive, waiting for messages...")
+
+                        elif n == 1 and cmd in [502, 522, 504, 524] and s == 0:
+                            # Delivereds, Seen, Clear Unread, ...
+                            continue
+
+                        elif n == 1 and cmd == 602 and s == 0:
+                            # Typing Event
+                            continue
+
+                        elif n == 1 and cmd == 601 and s == 0:
+                            controls = parsedData["data"].get("controls", [])
+                            for control in controls:
+                                if control["content"]["act_type"] == "group":
+
+                                    if control["content"]["act"] == "join_reject":
+                                        continue
+
+                                    groupEventData = json.loads(control["content"]["data"]) if isinstance(control["content"]["data"], str) else control["content"]["data"]
+                                    groupEventType = _util.getGroupEventType(control["content"]["act"])
+                                    event_data = EventObject.fromDict(groupEventData)
+                                    event_type = groupEventType
+                                    [
+                                        pool.submit(self.onEvent, event_data, event_type)
+                                        if thread else
+                                        self.onEvent(event_data, event_type)
+                                    ]
+
+                            continue
+
+                        elif cmd == 612:
+                            reacts = parsedData["data"].get("reacts", [])
+                            reactGroups = parsedData["data"].get("reactGroups", [])
+
+                            for react in reacts:
+                                react["content"] = json.loads(react["content"])
+                                msgObj = MessageObject.fromDict(react, None)
+                                [
+                                    pool.submit(self.onMessage, msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.uidFrom) or msgObj.idTo), ThreadType.USER)
+                                    if thread else
+                                    self.onMessage(msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.uidFrom) or msgObj.idTo), ThreadType.USER)
+                                ]
+
+                            for reactGroup in reactGroups:
+                                reactGroup["content"] = json.loads(reactGroup["content"])
+                                msgObj = MessageObject.fromDict(reactGroup, None)
+                                [
+                                    pool.submit(self.onMessage, msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.idTo) or self.uid), ThreadType.GROUP)
+                                    if thread else
+                                    self.onMessage(msgObj.msgId, str(int(msgObj.uidFrom) or self.uid), msgObj.content, msgObj, str(int(msgObj.idTo) or self.uid), ThreadType.GROUP)
+                                ]
+
+                        else:
+                            continue
+
+                    except KeyboardInterrupt:
+                        self._condition.set()
+                        ws.close()
+                        print("\x1b[1K")
+                        logger.warning("Stop Listen Because KeyboardInterrupt Exception!")
+                        pid = os.getpid()
+                        os.kill(pid, signal.SIGTERM)
+
+                    except TimeoutError:
+                        # ws.recv timeout - ket noi co the van song, tiep tuc vong lap
+                        if hasattr(self, '_last_heartbeat_log') and self._last_heartbeat_log:
+                            if time.time() - self._last_heartbeat_log >= 60:
+                                logger.debug("[WS] Heartbeat - connection alive, waiting for messages...")
+                                self._last_heartbeat_log = time.time()
+                        else:
                             self._last_heartbeat_log = time.time()
-                    else:
-                        self._last_heartbeat_log = time.time()
-                    continue
-                
-                except (websockets.ConnectionClosedOK, websockets.exceptions.ConnectionClosedOK):
-                    self._condition.set()
-                    ws.close()
-                    break
-                
-                except (websockets.ConnectionClosedError, websockets.exceptions.ConnectionClosedError):
-                    self._start_fix = True
-                    self._condition.set()
-                    break
-                
-                except Exception as e:
-                    if str(e) == "sent 1000 (OK); then received 1000 (OK) NORMAL_CLOSURE":
-                        pass
-                    
-                    elif "timed out" in str(e).lower() or "timeout" in str(e).lower():
                         continue
-                    
-                    else:
-                        logger.error(f"[WS] Unexpected error in recv loop: {e}")
+
+                    except (websockets.ConnectionClosedOK, websockets.exceptions.ConnectionClosedOK):
+                        self._condition.set()
+                        ws.close()
+                        break
+
+                    except (websockets.ConnectionClosedError, websockets.exceptions.ConnectionClosedError):
                         self._start_fix = True
                         self._condition.set()
                         break
-        
-        except KeyboardInterrupt:
-            print("\x1b[1K")
-            logger.warning("Stop Listen Because KeyboardInterrupt Exception!")
-            pid = os.getpid()
-            os.kill(pid, signal.SIGTERM)
-        
-        except Exception as e:
-            logger.error(f"[WS] Connection error: {e}")
-            self._start_fix = True
-        
-        finally:
-            self._listening = False
-        
-        if self._start_fix:
-            logger.debug("Reconnecting websocket because of interruption...")
-            self._start_fix = False
-            time.sleep(reconnect)
-            try:
-                self._listen_ws(thread, reconnect)
+
+                    except Exception as e:
+                        if str(e) == "sent 1000 (OK); then received 1000 (OK) NORMAL_CLOSURE":
+                            pass
+
+                        elif "timed out" in str(e).lower() or "timeout" in str(e).lower():
+                            continue
+
+                        else:
+                            logger.error(f"[WS] Unexpected error in recv loop: {e}")
+                            self._start_fix = True
+                            self._condition.set()
+                            break
+
+            except KeyboardInterrupt:
+                print("\x1b[1K")
+                logger.warning("Stop Listen Because KeyboardInterrupt Exception!")
+                pid = os.getpid()
+                os.kill(pid, signal.SIGTERM)
+                return
+
             except Exception as e:
-                logger.error(f"[WS] Reconnect failed: {e}, retrying in {reconnect}s...")
+                logger.error(f"[WS] Connection error: {e}")
+                self._start_fix = True
+
+            finally:
+                self._listening = False
+
+            if self._start_fix:
+                logger.debug("Reconnecting websocket because of interruption...")
+                self._start_fix = False
                 time.sleep(reconnect)
-                self._listen_ws(thread, reconnect)
-        elif hasattr(self, 'run_forever') and self.run_forever:
-            logger.debug("Run forever mode is enabled, trying to reconnect...")
-            time.sleep(reconnect)
-            try:
-                self._listen_ws(thread, reconnect)
-            except Exception as e:
-                logger.error(f"[WS] Run forever reconnect failed: {e}, retrying...")
+            elif hasattr(self, 'run_forever') and self.run_forever:
+                logger.debug("Run forever mode is enabled, trying to reconnect...")
                 time.sleep(reconnect)
-                self._listen_ws(thread, reconnect)
+            else:
+                break
     
     def startListening(self, delay=1, thread=False, type="websocket", reconnect=5):
         """Start listening from an external event loop.

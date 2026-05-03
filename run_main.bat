@@ -1,13 +1,15 @@
 @echo off
-title Zalo Bot - Keep Alive
+:: Tat QuickEdit Mode de CMD khong bi dung khi click chuot
+reg add "HKEY_CURRENT_USER\Console" /v QuickEdit /t REG_DWORD /d 0 /f >nul 2>&1
+
+:loop
+echo ============================================
+echo  Starting bot... (Press Ctrl+C to stop)
+echo  QuickEdit Mode: DISABLED
+echo ============================================
 cd /d "%~dp0"
-chcp 65001 >nul
-echo Starting Zalo Bot with Keep Alive...
-echo.
-echo Rules:
-echo   - 06:00 - 00:00: restart if no message for 60 minutes
-echo   - 00:00 - 05:00: restart if no message for 180 minutes
-echo   - 06:00 daily: auto restart every morning
-echo.
-python keep_alive.py
-pause
+python main.py
+echo Script exited with code %ERRORLEVEL%
+echo Restarting in 5 seconds...
+timeout /t 5
+goto loop

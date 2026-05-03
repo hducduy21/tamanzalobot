@@ -42,11 +42,12 @@ class State(object):
 		cls._config["secret_key"] = secret_key
 	
 	def _get(cls, *args, **kwargs):
+		kwargs.setdefault('timeout', 30)
 		sessionObj = cls._session.get(*args, **kwargs, headers=cls._headers, cookies=cls._cookies)
-		
 		return sessionObj
-		
+
 	def _post(cls, *args, **kwargs):
+		kwargs.setdefault('timeout', 30)
 		sessionObj = cls._session.post(*args, **kwargs, headers=cls._headers, cookies=cls._cookies)
 		return sessionObj
 	

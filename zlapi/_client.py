@@ -4407,12 +4407,13 @@ class ZaloAPI(object):
             logger.debug("Reconnecting websocket because of interruption...")
             self._start_fix = False
             time.sleep(reconnect)
-            self._listen_ws(thread, reconnect)
+            return True  # caller should reconnect iteratively
         elif hasattr(self, 'run_forever') and self.run_forever:
             logger.debug("Run forever mode is enabled, trying to reconnect...")
             time.sleep(reconnect)
-            self._listen_ws(thread, reconnect)
-    
+            return True  # caller should reconnect iteratively
+        return False
+
     def startListening(self, delay=1, thread=False, type="websocket", reconnect=5):
         """Start listening from an external event loop.
         
@@ -4426,10 +4427,11 @@ class ZaloAPI(object):
             ZaloAPIException: If request failed
         """
         if str(type).lower() == "websocket":
-            
+
             if self._state._config.get("zpw_ws"):
-                self._listen_ws(thread, reconnect)
-                
+                while self._listen_ws(thread, reconnect):
+                    pass
+
             else:
                 logger.debug("WebSocket url not found. Listen will switch to `requests` mode")
                 self._listen_req(delay, thread)

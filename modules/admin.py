@@ -9,7 +9,14 @@ des = {
 }
 
 def is_admin(author_id):
-    return author_id == ADMIN
+    if author_id == ADMIN:
+        return True
+    try:
+        with open('seting.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return author_id in data.get('adm', [])
+    except Exception:
+        return False
 
 def add_admin(uid, name):
     with open('seting.json', 'r') as f:

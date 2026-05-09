@@ -63,7 +63,7 @@ def _parse_n4(warranty_code):
     if match is None:
         return None, False
     if match.start() == 0:
-        return '[INTERNAL]', True
+        return '[TAMAN]', True
     suffix = warranty_code[match.end():].upper()
     return f'[{suffix}]', False
 

@@ -3,6 +3,7 @@ import os
 import sys
 import shutil
 import sqlite3
+import webhook
 import subprocess
 import json
 import random
@@ -678,7 +679,8 @@ if __name__ == "__main__":
                 logger.info(f"Resource stats - Memory: {stats['memory_percent']:.1f}%, CPU: {stats['cpu_percent']:.1f}%, Disk: {stats['disk_percent']:.1f}%, Process Memory: {stats['process_memory_mb']:.1f}MB")
             
             logger.info("[DEBUG] Client created successfully, starting listener...")
-            client.listen(thread=True, delay=0, run_forever=True, reconnect=5)            
+            webhook.start(client)
+            client.listen(thread=True, delay=0, run_forever=True, reconnect=5)
             logger.info("[DEBUG] Listener started successfully")
             break  # Exit loop if successful
         except KeyboardInterrupt:

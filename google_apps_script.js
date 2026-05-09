@@ -59,18 +59,18 @@ function myFunction() {
       theoNgay[ngay].push(item.maKH);
     });
 
-    let message = CTV ${ctv}\n;
+    let message = `CTV ${ctv}\n`;
 
     // Duyệt từ 3 → 1 ngày
     [3, 2, 1].forEach(ngay => {
       if (theoNgay[ngay]) {
-        message += Các mã còn ${ngay} ngày: ${theoNgay[ngay].join(", ")}\n;
+        message += `Các mã còn ${ngay} ngày: ${theoNgay[ngay].join(", ")}\n`;
       }
     });
 
     // Mã hết hạn (0 ngày)
     if (theoNgay[0]) {
-      message += Các mã đã hết hạn: ${theoNgay[0].join(", ")}\n;
+      message += `Các mã đã hết hạn: ${theoNgay[0].join(", ")}\n`;
     }
 
     const payload = {

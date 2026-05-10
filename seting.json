@@ -13,5 +13,75 @@
         "7425738306630034756",
         "5559667810446905292",
         "3875505395421583395"
-    ]
+    ],
+    "category": [
+        {
+          "id": "N5",
+          "name": "FAM NETFFLIX"
+        },
+        {
+          "id": "Y1",
+          "name": "YOUTUBE PREMIUM"
+        },
+        {
+          "id": "D1",
+          "name": "DUOLINGO"
+        },
+        {
+          "id": "CH2",
+          "name": "CHATGPT"
+        },
+        {
+          "id": "V1",
+          "name": "VIEON"
+        },
+        {
+          "id": "G1",
+          "name": "GALAXYPLAY"
+        },
+        {
+          "id": "S1",
+          "name": "SPOTIFIX"
+        },
+        {
+          "id": "31",
+          "name": "365"
+        },
+        {
+          "id": "O1",
+          "name": "ONE"
+        },
+        {
+          "id": "A1",
+          "name": "ADOBE"
+        },
+        {
+          "id": "CA1",
+          "name": "CAPCUT"
+        },
+        {
+          "id": "N4",
+          "name": "NETFFLIX"
+        },
+        {
+          "id": "C1",
+          "name": "CANVA"
+        },
+        {
+          "id": "N3",
+          "name": "NETI"
+        },
+        {
+          "id": "GE1",
+          "name": "GEMINI"
+        },
+        {
+          "id": "CH1",
+          "name": "CHATGOT GO"
+        },
+        {
+          "id": "CH3",
+          "name": "CHATGPT"
+        }
+      ]
 }

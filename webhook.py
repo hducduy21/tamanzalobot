@@ -1,6 +1,7 @@
 import json
-import re
+import queue
 import threading
+import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from zlapi.models import Message, ThreadType
 from utils.logging_utils import Logging
@@ -8,26 +9,84 @@ from utils.logging_utils import Logging
 logger = Logging()
 _client = None
 
+_send_queue = queue.Queue()
+_worker_lock = threading.Lock()
+_worker_started = False
+
+GROUP_SEND_INTERVAL = 15  # seconds between group messages
+
+
+def _worker():
+    while True:
+        msg, gid, gname = _send_queue.get()
+        try:
+            _client.sendMessage(msg, gid, ThreadType.GROUP)
+            logger.info(f"[Webhook] Đã gửi tới nhóm '{gname}' ({gid})")
+        except Exception as e:
+            logger.error(f"[Webhook] Gửi thất bại tới '{gname}': {e}")
+        finally:
+            _send_queue.task_done()
+        time.sleep(GROUP_SEND_INTERVAL)
+
+
+def _ensure_worker():
+    global _worker_started
+    with _worker_lock:
+        if not _worker_started:
+            threading.Thread(target=_worker, daemon=True).start()
+            _worker_started = True
+
 
 def set_client(client):
     global _client
     _client = client
 
 
-def _read_secret():
+def _read_setting():
     try:
         with open('seting.json', 'r', encoding='utf-8') as f:
-            return json.load(f).get('key', '')
+            return json.load(f)
     except Exception:
-        return ''
+        return {}
+
+
+def _read_secret():
+    return _read_setting().get('key', '')
 
 
 def _read_port():
     try:
-        with open('seting.json', 'r', encoding='utf-8') as f:
-            return int(json.load(f).get('port', 5000))
+        return int(_read_setting().get('port', 5000))
     except Exception:
         return 5000
+
+
+def _match_category(warranty_code):
+    """
+    Find the LAST-occurring category ID in warranty_code (case-insensitive).
+    At the same start position the longest ID wins (e.g. CH2 > CH1 if both match).
+    Returns (start_pos, cat_id, cat_name) or (None, None, None).
+    """
+    categories = _read_setting().get('category', [])
+    code_upper = warranty_code.upper()
+
+    best = None  # (start_pos, id_len, cat_id, cat_name)
+    for cat in categories:
+        needle = cat['id'].upper()
+        pos = 0
+        while True:
+            idx = code_upper.find(needle, pos)
+            if idx == -1:
+                break
+            if (best is None
+                    or idx > best[0]
+                    or (idx == best[0] and len(needle) > best[1])):
+                best = (idx, len(needle), cat['id'], cat['name'])
+            pos = idx + 1
+
+    if best is None:
+        return None, None, None
+    return best[0], best[2], best[3]
 
 
 def _find_groups_by_prefix(client, prefix):
@@ -52,31 +111,26 @@ def _find_groups_by_prefix(client, prefix):
     return results
 
 
-def _parse_n4(warranty_code):
-    """
-    Returns (group_prefix, include_ctv) or (None, False).
-    N4/n4 at start → ('[INTERNAL]', True)
-    N4/n4 elsewhere → ('[<SUFFIX_UPPER>]', False)
-    No N4 → (None, False)
-    """
-    match = re.search(r'n4', warranty_code, re.IGNORECASE)
-    if match is None:
-        return None, False
-    if match.start() == 0:
-        return '[TAMAN]', True
-    suffix = warranty_code[match.end():].upper()
-    return f'[{suffix}]', False
-
-
 def _send_password(ctv, warranty_code, password):
     if _client is None:
         logger.warning("[Webhook] Client chưa sẵn sàng, bỏ qua.")
         return
 
-    group_prefix, include_ctv = _parse_n4(warranty_code)
-    if group_prefix is None:
-        logger.info(f"[Webhook] Mã hàng '{warranty_code}' không chứa N4, bỏ qua.")
+    start_pos, cat_id, cat_name = _match_category(warranty_code)
+    if cat_id is None:
+        logger.info(f"[Webhook] Mã hàng '{warranty_code}' không khớp category nào, bỏ qua.")
         return
+
+    cat_end = start_pos + len(cat_id)
+    if start_pos == 0:
+        group_prefix = '[TAMAN]'
+        include_ctv = True
+    else:
+        suffix = warranty_code[cat_end:].upper()
+        group_prefix = f'[{suffix}]'
+        include_ctv = False
+
+    logger.info(f"[Webhook] '{warranty_code}' → category '{cat_id}' tại pos {start_pos}, group prefix '{group_prefix}'")
 
     groups = _find_groups_by_prefix(_client, group_prefix)
     if not groups:
@@ -93,11 +147,8 @@ def _send_password(ctv, warranty_code, password):
     msg = Message(text="\n".join(lines))
 
     for gid, gname in groups:
-        try:
-            _client.sendMessage(msg, gid, ThreadType.GROUP)
-            logger.info(f"[Webhook] Đã gửi tới nhóm '{gname}' ({gid})")
-        except Exception as e:
-            logger.error(f"[Webhook] Gửi thất bại tới '{gname}': {e}")
+        _send_queue.put((msg, gid, gname))
+        logger.info(f"[Webhook] Đã xếp hàng gửi tới '{gname}' ({gid}), queue size={_send_queue.qsize()}")
 
 
 class _Handler(BaseHTTPRequestHandler):
@@ -147,6 +198,7 @@ class _Handler(BaseHTTPRequestHandler):
 
 def start(client, port=None):
     set_client(client)
+    _ensure_worker()
     if port is None:
         port = _read_port()
 

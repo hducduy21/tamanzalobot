@@ -61,7 +61,7 @@ function soSanhVaCapNhatLienFile() {
         const newPass = mapData.get(maSheet2);
         const oldPass = rangeL[j][0];
 
-        if (newPass !== oldPass) {
+        if (oldPass !== "" && oldPass !== null && newPass !== oldPass) {
           const ctv = rangeD[j][0];
           _sendToBot(ctv, maSheet2, newPass);
         }

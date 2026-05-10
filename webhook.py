@@ -138,12 +138,14 @@ def _send_password(ctv, warranty_code, password):
         return
 
     lines = [
-        "Shop gửi lại mật khẩu mới ạ",
-        f"Mật khẩu: {password}",
-        f"Mã hàng: {warranty_code}",
+        "Tâm An, Tài Khoản của Bạn: ",
+        f"Mã Hàng: {warranty_code}",
+        f"Mật Khẩu/Hạn dùng: {password}",
+        f"Dịch vụ: {cat_name}",
     ]
-    if include_ctv and ctv:
-        lines.append(f"CTV: {ctv}")
+
+    if include_ctv and ctv:                                                                                                       
+        lines.append(f"CTV: {ctv}")  
     msg = Message(text="\n".join(lines))
 
     for gid, gname in groups:

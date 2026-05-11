@@ -13,6 +13,9 @@ _send_queue = queue.Queue()
 _worker_lock = threading.Lock()
 _worker_started = False
 
+_server_instance = None
+_server_lock = threading.Lock()
+
 GROUP_SEND_INTERVAL = 15  # seconds between group messages
 
 
@@ -166,7 +169,11 @@ class _Handler(BaseHTTPRequestHandler):
         self.wfile.write(payload)
 
     def do_POST(self):
+        client_ip = self.client_address[0]
+        logger.info(f"[Webhook] Nhận POST từ {client_ip} → path='{self.path}'")
+
         if self.path != '/warranty':
+            logger.warning(f"[Webhook] Path không hợp lệ: '{self.path}' từ {client_ip}")
             self._send_json(404, {"error": "Not found"})
             return
 
@@ -174,10 +181,12 @@ class _Handler(BaseHTTPRequestHandler):
         try:
             data = json.loads(self.rfile.read(length))
         except Exception:
+            logger.warning(f"[Webhook] JSON không hợp lệ từ {client_ip}")
             self._send_json(400, {"error": "Invalid JSON"})
             return
 
         if data.get('secret', '') != _read_secret():
+            logger.warning(f"[Webhook] Sai secret từ {client_ip}, bị từ chối 401")
             self._send_json(401, {"error": "Unauthorized"})
             return
 
@@ -198,14 +207,26 @@ class _Handler(BaseHTTPRequestHandler):
         self._send_json(200, {"status": "ok"})
 
 
+def _run_server(port):
+    global _server_instance
+    while True:
+        try:
+            server = HTTPServer(('0.0.0.0', port), _Handler)
+            with _server_lock:
+                _server_instance = server
+            logger.info(f"[Webhook] Server đang lắng nghe tại port {port}")
+            server.serve_forever()
+        except Exception as e:
+            logger.error(f"[Webhook] Server bị lỗi, tự khởi động lại sau 5s: {e}")
+            time.sleep(5)
+
+
 def start(client, port=None):
     set_client(client)
     _ensure_worker()
     if port is None:
         port = _read_port()
 
-    server = HTTPServer(('0.0.0.0', port), _Handler)
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread = threading.Thread(target=_run_server, args=(port,), daemon=True)
     thread.start()
-    logger.info(f"[Webhook] Server đang lắng nghe tại port {port}")
-    return server
+    return thread

@@ -3,6 +3,7 @@ import queue
 import threading
 import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from socketserver import ThreadingMixIn
 from zlapi.models import Message, ThreadType
 from utils.logging_utils import Logging
 
@@ -17,6 +18,11 @@ _server_instance = None
 _server_lock = threading.Lock()
 
 GROUP_SEND_INTERVAL = 15  # seconds between group messages
+
+_group_cache = None
+_group_cache_time = 0
+_group_cache_ttl = 120  # seconds
+_group_cache_lock = threading.Lock()
 
 
 def _worker():
@@ -92,25 +98,37 @@ def _match_category(warranty_code):
     return best[0], best[2], best[3]
 
 
+def _get_all_groups(client):
+    """Return gridInfoMap, cached for _group_cache_ttl seconds."""
+    global _group_cache, _group_cache_time
+    with _group_cache_lock:
+        if _group_cache is not None and time.time() - _group_cache_time < _group_cache_ttl:
+            return _group_cache
+        try:
+            all_groups = client.fetchAllGroups()
+            group_ids = list(all_groups.gridVerMap.keys())
+            if not group_ids:
+                return {}
+            id_map = {gid: 0 for gid in group_ids}
+            info = client.fetchGroupInfo(id_map)
+            grid_map = info.gridInfoMap if hasattr(info, 'gridInfoMap') else {}
+            _group_cache = grid_map
+            _group_cache_time = time.time()
+            logger.info(f"[Webhook] Đã cache {len(grid_map)} nhóm")
+            return grid_map
+        except Exception as e:
+            logger.error(f"[Webhook] Lỗi khi lấy danh sách nhóm: {e}")
+            return _group_cache or {}
+
+
 def _find_groups_by_prefix(client, prefix):
     """Return list of (group_id, group_name) where name starts with prefix."""
+    grid_map = _get_all_groups(client)
     results = []
-    try:
-        all_groups = client.fetchAllGroups()
-        group_ids = list(all_groups.gridVerMap.keys())
-        if not group_ids:
-            return results
-
-        id_map = {gid: 0 for gid in group_ids}
-        info = client.fetchGroupInfo(id_map)
-        grid_map = info.gridInfoMap if hasattr(info, 'gridInfoMap') else {}
-
-        for gid, gdata in grid_map.items():
-            name = gdata.get('name', '') if isinstance(gdata, dict) else getattr(gdata, 'name', '')
-            if name.startswith(prefix):
-                results.append((gid, name))
-    except Exception as e:
-        logger.error(f"[Webhook] Lỗi khi lấy danh sách nhóm: {e}")
+    for gid, gdata in grid_map.items():
+        name = gdata.get('name', '') if isinstance(gdata, dict) else getattr(gdata, 'name', '')
+        if name.startswith(prefix):
+            results.append((gid, name))
     return results
 
 
@@ -207,11 +225,16 @@ class _Handler(BaseHTTPRequestHandler):
         self._send_json(200, {"status": "ok"})
 
 
+class _ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    daemon_threads = True
+    allow_reuse_address = True
+
+
 def _run_server(port):
     global _server_instance
     while True:
         try:
-            server = HTTPServer(('0.0.0.0', port), _Handler)
+            server = _ThreadedHTTPServer(('0.0.0.0', port), _Handler)
             with _server_lock:
                 _server_instance = server
             logger.info(f"[Webhook] Server đang lắng nghe tại port {port}")

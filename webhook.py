@@ -190,7 +190,7 @@ class _Handler(BaseHTTPRequestHandler):
         client_ip = self.client_address[0]
         logger.info(f"[Webhook] Nhận POST từ {client_ip} → path='{self.path}'")
 
-        if self.path != '/warranty':
+        if self.path not in ('/warranty', '/warranty/batch'):
             logger.warning(f"[Webhook] Path không hợp lệ: '{self.path}' từ {client_ip}")
             self._send_json(404, {"error": "Not found"})
             return
@@ -206,6 +206,23 @@ class _Handler(BaseHTTPRequestHandler):
         if data.get('secret', '') != _read_secret():
             logger.warning(f"[Webhook] Sai secret từ {client_ip}, bị từ chối 401")
             self._send_json(401, {"error": "Unauthorized"})
+            return
+
+        if self.path == '/warranty/batch':
+            items = data.get('items', [])
+            if not isinstance(items, list) or not items:
+                self._send_json(400, {"error": "Thiếu hoặc sai định dạng items"})
+                return
+            logger.info(f"[Webhook] Batch {len(items)} items từ {client_ip}")
+            def _run_batch(items):
+                for item in items:
+                    ctv = item.get('ctv', '').strip()
+                    warranty_code = item.get('warranty_code', '').strip()
+                    password = item.get('password', '').strip()
+                    if warranty_code:
+                        _send_password(ctv, warranty_code, password)
+            threading.Thread(target=_run_batch, args=(items,), daemon=True).start()
+            self._send_json(200, {"status": "ok", "queued": len(items)})
             return
 
         ctv = data.get('ctv', '').strip()

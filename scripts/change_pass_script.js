@@ -54,6 +54,7 @@ function soSanhVaCapNhatLienFile() {
     const rangeL = s2.getRange(2, 12, lastRow2 - 1, 1).getValues();
 
     let count = 0;
+    const batchItems = [];
     for (let j = 0; j < rangeK.length; j++) {
       const maSheet2 = rangeK[j][0].toString().trim();
 
@@ -63,7 +64,7 @@ function soSanhVaCapNhatLienFile() {
 
         if (oldPass !== "" && oldPass !== null && newPass !== oldPass) {
           const ctv = rangeD[j][0];
-          _sendToBot(ctv, maSheet2, newPass);
+          batchItems.push({ ctv: ctv, warranty_code: maSheet2, password: newPass });
         }
 
         rangeL[j][0] = newPass;
@@ -74,10 +75,42 @@ function soSanhVaCapNhatLienFile() {
     // 5. Ghi dữ liệu mới vào cột L của Sheet 2
     s2.getRange(2, 12, rangeL.length, 1).setValues(rangeL);
 
-    Logger.log(`✅ Thành công! Đã cập nhật ${count} giá trị sang File thứ 2.`);
+    // 6. Gửi batch 1 lần thay vì gọi từng cái
+    if (batchItems.length > 0) {
+      _sendBatchToBot(batchItems);
+    }
+
+    Logger.log(`✅ Thành công! Đã cập nhật ${count} giá trị, gửi batch ${batchItems.length} mục.`);
   }
-var BOT_WEBHOOK_URL = "http://160.191.245.27:5000/warranty";
-var SECRET_KEY      = "6b6bbf";
+var BOT_WEBHOOK_URL       = "http://160.191.245.27:5000/warranty";
+var BOT_WEBHOOK_BATCH_URL = "http://160.191.245.27:5000/warranty/batch";
+var SECRET_KEY            = "6b6bbf";
+
+function _sendBatchToBot(items) {
+    var payload = JSON.stringify({
+      secret: SECRET_KEY,
+      items:  items
+    });
+
+    var options = {
+      method:             "post",
+      contentType:        "application/json",
+      payload:            payload,
+      muteHttpExceptions: true
+    };
+
+    try {
+      var response = UrlFetchApp.fetch(BOT_WEBHOOK_BATCH_URL, options);
+      var code     = response.getResponseCode();
+      if (code !== 200) {
+        Logger.log("Batch lỗi HTTP " + code + ": " + response.getContentText());
+      } else {
+        Logger.log("Batch gửi OK: " + items.length + " mục.");
+      }
+    } catch (err) {
+      Logger.log("Batch exception: " + err.toString());
+    }
+}
 
 function _sendToBot(ctv, warrantyCode, password) {
     var payload = JSON.stringify({
@@ -86,14 +119,14 @@ function _sendToBot(ctv, warrantyCode, password) {
       warranty_code: warrantyCode,
       password:      password
     });
-  
+
     var options = {
       method:             "post",
       contentType:        "application/json",
       payload:            payload,
       muteHttpExceptions: true
     };
-  
+
     try {
       var response = UrlFetchApp.fetch(BOT_WEBHOOK_URL, options);
       var code     = response.getResponseCode();
@@ -103,4 +136,4 @@ function _sendToBot(ctv, warrantyCode, password) {
     } catch (err) {
       Logger.log("Exception: " + err.toString());
     }
-  }
+}

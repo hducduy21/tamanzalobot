@@ -5,13 +5,13 @@ _DB_PATH = 'database/database.sql'
 _lock = threading.Lock()
 
 _DEFAULTS = {
-    'notify_batch_sync': True,
-    'notify_warranty_edit': True,
+    'notify_sync_pass': True,
+    'notify_edit_pass': True,
 }
 
 DESCRIPTIONS = {
-    'notify_batch_sync': 'Gửi thông báo Zalo khi sync pass qua /warranty/batch',
-    'notify_warranty_edit': 'Gửi thông báo Zalo khi có cập nhật qua /warranty',
+    'notify_sync_pass': 'Gửi thông báo Zalo khi sync pass từ sheet nguồn -> quản lý',
+    'notify_edit_pass': 'Gửi thông báo Zalo khi có cập nhật pass ở file quản lý',
 }
 
 

@@ -67,8 +67,8 @@ def handle_flag_command(message, message_object, thread_id, thread_type, author_
             "  flag on <tên_flag>\n"
             "  flag off <tên_flag>\n\n"
             "• Các flag hiện có:\n"
-            "  notify_batch_sync\n"
-            "  notify_warranty_edit"
+            "  notify_sync_pass\n"
+            "  notify_edit_pass"
         )),
         message_object, thread_id, thread_type
     )

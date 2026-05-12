@@ -215,8 +215,8 @@ class _Handler(BaseHTTPRequestHandler):
             if not isinstance(items, list) or not items:
                 self._send_json(400, {"error": "Thiếu hoặc sai định dạng items"})
                 return
-            if not get_flag('notify_batch_sync'):
-                logger.info(f"[Webhook] Flag 'notify_batch_sync'=False, bỏ qua batch {len(items)} items")
+            if not get_flag('notify_sync_pass'):
+                logger.info(f"[Webhook] Flag 'notify_sync_pass'=False, bỏ qua batch {len(items)} items")
                 self._send_json(200, {"status": "ok", "queued": 0, "skipped": len(items)})
                 return
             logger.info(f"[Webhook] Batch {len(items)} items từ {client_ip}")
@@ -239,8 +239,8 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(400, {"error": "Thiếu warranty_code"})
             return
 
-        if not get_flag('notify_warranty_edit'):
-            logger.info(f"[Webhook] Flag 'notify_warranty_edit'=False, bỏ qua '{warranty_code}'")
+        if not get_flag('notify_edit_pass'):
+            logger.info(f"[Webhook] Flag 'notify_edit_pass'=False, bỏ qua '{warranty_code}'")
             self._send_json(200, {"status": "ok", "skipped": True})
             return
 

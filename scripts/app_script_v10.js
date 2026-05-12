@@ -133,17 +133,20 @@ function doPost(e) {
 // Cần cài installable trigger: Extensions > Apps Script > Triggers > onEditSheet (On edit)
 // (Simple trigger không dùng được UrlFetchApp)
 function onEditSheet(e) {
+  if (!e || !e.range) return;
   var range = e.range;
   var sheet = range.getSheet();
 
   if (sheet.getName() !== SHEET_NAME) return;
+  if (range.getNumRows() !== 1 || range.getNumColumns() !== 1) return; // bỏ qua thay đổi nhiều ô (xóa/chèn hàng...)
   if (range.getColumn() !== COL_PASSWORD) return;  // chỉ cột L
+  if (typeof e.value === "undefined") return; // chỉ xử lý nhập trực tiếp 1 ô
   var row = range.getRow();
   if (row < 2) return;  // bỏ qua header
 
   var ctv      = sheet.getRange(row, COL_CTV).getValue().toString().trim();
   var warranty = sheet.getRange(row, COL_WARRANTY).getValue().toString().trim();
-  var password = range.getValue().toString().trim();
+  var password = e.value.toString().trim();
 
   if (!warranty || !password) return;
 

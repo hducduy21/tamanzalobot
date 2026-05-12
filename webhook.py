@@ -6,6 +6,8 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
 from zlapi.models import Message, ThreadType
 from utils.logging_utils import Logging
+from utils.feature_flags import get_flag
+from utils.feature_flags import get_flag, set_flag, get_all_flags
 
 logger = Logging()
 _client = None
@@ -213,6 +215,10 @@ class _Handler(BaseHTTPRequestHandler):
             if not isinstance(items, list) or not items:
                 self._send_json(400, {"error": "Thiếu hoặc sai định dạng items"})
                 return
+            if not get_flag('notify_batch_sync'):
+                logger.info(f"[Webhook] Flag 'notify_batch_sync'=False, bỏ qua batch {len(items)} items")
+                self._send_json(200, {"status": "ok", "queued": 0, "skipped": len(items)})
+                return
             logger.info(f"[Webhook] Batch {len(items)} items từ {client_ip}")
             def _run_batch(items):
                 for item in items:
@@ -231,6 +237,11 @@ class _Handler(BaseHTTPRequestHandler):
 
         if not warranty_code:
             self._send_json(400, {"error": "Thiếu warranty_code"})
+            return
+
+        if not get_flag('notify_warranty_edit'):
+            logger.info(f"[Webhook] Flag 'notify_warranty_edit'=False, bỏ qua '{warranty_code}'")
+            self._send_json(200, {"status": "ok", "skipped": True})
             return
 
         threading.Thread(
